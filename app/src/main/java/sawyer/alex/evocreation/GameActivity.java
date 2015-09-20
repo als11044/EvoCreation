@@ -91,7 +91,6 @@ public class GameActivity extends Activity
             int h = mSurface.getHeight();
 
             List<Organism> organisms = new ArrayList<Organism>();
-            organisms.add(new Organism());
 
             float x = (w/2);
             float y = (h/2);
@@ -101,6 +100,9 @@ public class GameActivity extends Activity
             float innerRadius = 50.0f;
 
             organisms.add(new Organism(r1,g1,b1,1,x,y,speedX,speedY,
+                    outerRadius, innerRadius,w,h));
+
+            organisms.add(new Organism(r1,g1,b1,1,(x+100),(y+100),speedX,speedY,
                     outerRadius, innerRadius,w,h));
 
             while (mRunning && !Thread.interrupted()) {

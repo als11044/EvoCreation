@@ -41,10 +41,8 @@ public class Organism {
         outerRadius = setouterRadius;
         w = setw;
         h = seth;
-    }
-    Organism() {
-        int icolor = Color.rgb(ir, ig, ib);
-        int ocolor = Color.rgb((255-ir),(255-ig),(255-ib));
+        icolor = Color.rgb(ir, ig, ib);
+        ocolor = Color.rgb((255-ir),(255-ig),(255-ib));
     }
 
     public void setx(float setx){
