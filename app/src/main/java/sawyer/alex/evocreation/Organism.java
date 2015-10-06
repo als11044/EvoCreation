@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 
+import java.util.Random;
+
 /**
  * Created by Alexander on 9/15/2015.
  */
@@ -24,6 +26,13 @@ public class Organism {
     int ocolor;
     int w;
     int h;
+    int mutationChance;
+    double deathChance;
+    int splitChance;
+    double deathRate;
+    int survivability;
+    int arraySize;
+
 
     Organism(int setir, int setig, int setib, int setname, float setx,
              float sety, float setspeedX, float setspeedY,
@@ -43,6 +52,7 @@ public class Organism {
         h = seth;
         icolor = Color.rgb(ir, ig, ib);
         ocolor = Color.rgb((255-ir),(255-ig),(255-ib));
+
     }
 
     public void setx(float setx){
@@ -81,5 +91,15 @@ public class Organism {
 
         x += speedX;
         y += speedY;
+    }
+    public void update(int setarraySize) {
+        arraySize = setarraySize;
+        deathRate = (3*arraySize)/(Math.sqrt(16*(arraySize)^2+100000*arraySize));
+        Random rnd = new Random();
+        age = age +1;
+        deathChance = (rnd.nextInt(100))/100;
+        if (deathChance < deathRate) {
+
+        }
     }
 }
