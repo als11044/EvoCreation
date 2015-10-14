@@ -20,10 +20,14 @@ public class Time {
         year = 0;
     }
 
-    public void update(TextView view) {
+    public void update(TextView view, int setarraySize, int setbirths, int setdeaths) {
         timeView = view;
+        int arraySize = setarraySize;
+        int births = setbirths;
+        int deaths = setdeaths;
         iterations = iterations + 1;
-        if (iterations == 1918) {
+//        1918
+        if (iterations == 300) {
             iterations = 0;
             month = month + 1;
 
@@ -32,7 +36,7 @@ public class Time {
                 year = year + 1;
             }
         }
-        displayText = year + " years and " + month + " months since the beginning of life.";
+        displayText = year + " years and " + month + " months since the beginning of life.    Population-" + arraySize + "  Births-" + births + "  Deaths-" + deaths;
 
         timeView.post(new Runnable() {
             public void run() {

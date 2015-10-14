@@ -7,21 +7,28 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import android.graphics.SurfaceTexture;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.TextureView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 
 public class GameActivity extends Activity
         implements TextureView.SurfaceTextureListener {
     private TextureView mTextureView;
+    private RelativeLayout layout_joystick;
+    private ImageView image_joystick, image_border;
     private TextView timeView;
+    private JoyStickClass js;
     private GameActivity.RenderingThread mThread;
 
     @Override
@@ -29,9 +36,62 @@ public class GameActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         timeView = (TextView) findViewById(R.id.timeView);
+        layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
         mTextureView = (TextureView) findViewById(R.id.textureView);
         mTextureView.setSurfaceTextureListener(this);
+
+        js = new JoyStickClass(getApplicationContext()
+                , layout_joystick, R.drawable.image_button);
+        js.setStickSize(150, 150);
+        js.setLayoutSize(500, 500);
+        js.setLayoutAlpha(150);
+        js.setStickAlpha(100);
+        js.setOffset(90);
+        js.setMinimumDistance(50);
+
+        layout_joystick.setOnTouchListener(new OnTouchListener() {
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+                js.drawStick(arg1);
+                if(arg1.getAction() == MotionEvent.ACTION_DOWN
+                        || arg1.getAction() == MotionEvent.ACTION_MOVE) {
+                   /* textView1.setText("X : " + String.valueOf(js.getX()));
+                    textView2.setText("Y : " + String.valueOf(js.getY()));
+                    textView3.setText("Angle : " + String.valueOf(js.getAngle()));
+                    textView4.setText("Distance : " + String.valueOf(js.getDistance()));*/
+
+                    int direction = js.get8Direction();
+                    if(direction == JoyStickClass.STICK_UP) {
+                       /* textView5.setText("Direction : Up");*/
+                    } else if(direction == JoyStickClass.STICK_UPRIGHT) {
+                       /* textView5.setText("Direction : Up Right");*/
+                    } else if(direction == JoyStickClass.STICK_RIGHT) {
+                        /*textView5.setText("Direction : Right");*/
+                    } else if(direction == JoyStickClass.STICK_DOWNRIGHT) {
+                       /* textView5.setText("Direction : Down Right");*/
+                    } else if(direction == JoyStickClass.STICK_DOWN) {
+                       /* textView5.setText("Direction : Down");*/
+                    } else if(direction == JoyStickClass.STICK_DOWNLEFT) {
+/*                        textView5.setText("Direction : Down Left");*/
+                    } else if(direction == JoyStickClass.STICK_LEFT) {
+/*                        textView5.setText("Direction : Left");*/
+                    } else if(direction == JoyStickClass.STICK_UPLEFT) {
+/*                        textView5.setText("Direction : Up Left");*/
+                    } else if(direction == JoyStickClass.STICK_NONE) {
+/*                        textView5.setText("Direction : Center");*/
+                    }
+                } else if(arg1.getAction() == MotionEvent.ACTION_UP) {
+/*                    textView1.setText("X :");
+                    textView2.setText("Y :");
+                    textView3.setText("Angle :");
+                    textView4.setText("Distance :");
+                    textView5.setText("Direction :");*/
+                }
+                return true;
+            }
+        });
     }
+
+
 
 
             @Override
@@ -82,6 +142,9 @@ public class GameActivity extends Activity
                 public void run() {
                     int w = mSurface.getWidth();
                     int h = mSurface.getHeight();
+                    int timeLast = 0;
+                    int deaths = 0;
+                    int births = 0;
 
                     List<Organism> organisms = new ArrayList<Organism>();
                     Time time = new Time();
@@ -93,30 +156,47 @@ public class GameActivity extends Activity
                     float outerRadius = 30.0f;
                     float innerRadius = 20.0f;
 
-                    organisms.add(new Organism(r1, g1, b1, 1, x, y, speedX, speedY,
-                            innerRadius, outerRadius, w, h));
-
-                    organisms.add(new Organism(r1, g1, b1, 1, (x + 100), (y + 100), speedX, speedY,
-                            innerRadius, outerRadius, w, h));
+                    organisms.add(0, new Organism(r1, g1, b1, 1, x, y, speedX, speedY,
+                            innerRadius, outerRadius, w, h,r,g,b));
 
                     while (mRunning && !Thread.interrupted()) {
                         final Canvas canvas = mSurface.lockCanvas(null);
                         int arraySize = organisms.size();
+                        int timeNow = time.month;
                         try {
                             canvas.drawColor(color);
-                            for (Organism organism : organisms) {
-                                organism.draw(canvas);
+                            for (int i = arraySize - 1; i >= 0; i-- ) {
+                                organisms.get(i).draw(canvas);
+                                organisms.get(i).move();
+                            }
+
+                            if (timeNow != timeLast) {
+                                timeLast = timeNow;
+                                for (int i = arraySize - 1; i >= 0; i-- ) {
+                                    String update = organisms.get(i).update(arraySize);
+                                    if (update.equals("dead")) {
+                                        organisms.remove(i);
+                                        deaths = deaths + 1;
+                                    } else if (update.equals("split")) {
+                                        r1 = organisms.get(i).getrnew();
+                                        g1 = organisms.get(i).getgnew();
+                                        b1 = organisms.get(i).getbnew();
+                                        x = organisms.get(i).getx();
+                                        y = organisms.get(i).gety();
+                                        speedX = organisms.get(i).getspeedX();
+                                        speedY = organisms.get(i).getspeedY();
+                                        organisms.add(new Organism(r1, g1, b1, 1, x, y, speedX, speedY,
+                                                innerRadius, outerRadius, w, h, r, g, b));
+                                        births = births + 1;
+                                    }
+                                }
                             }
                         } finally {
                             mSurface.unlockCanvasAndPost(canvas);
                         }
-
-                        for (Organism organism : organisms) {
-                            organism.move();
-                        }
                         try {
                             Thread.sleep(15);
-                            time.update(timeView);
+                            time.update(timeView, arraySize,births,deaths);
                         } catch (InterruptedException e) {
                             // Interrupted
                         }
