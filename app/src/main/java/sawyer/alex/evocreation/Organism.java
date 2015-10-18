@@ -17,15 +17,17 @@ public class Organism {
     int name;
     float x;
     float y;
-    float speedX;
-    float speedY;
+    double speedX;
+    double speedY;
     float innerRadius;
     float outerRadius;
     int age;
     int icolor;
     int ocolor;
-    int w;
-    int h;
+    int xMax;
+    int yMax;
+    int xMin;
+    int yMin;
     int mutationChance;
     double deathChance;
     int splitChance;
@@ -41,12 +43,16 @@ public class Organism {
     int r;
     int g;
     int b;
+    int speedR;
+    double angle;
+    int h;
+    int w;
 
 
     Organism(int setir, int setig, int setib, int setname, float setx,
-             float sety, float setspeedX, float setspeedY,
-             float setinnerRadius, float setouterRadius,
-             int setw, int seth, int setr, int setg, int setb) {
+             float sety, double setspeedX, double setspeedY,
+             float setinnerRadius, float setouterRadius, int setr,
+             int setg, int setb, int setspeedR, double setangle, int seth, int setw) {
         ir = setir;
         ig = setig;
         ib = setib;
@@ -57,12 +63,18 @@ public class Organism {
         speedY = setspeedY;
         innerRadius = setinnerRadius;
         outerRadius = setouterRadius;
-        w = setw;
-        h = seth;
         r = setr;
         g = setg;
         b = setb;
+        speedR = setspeedR;
+        angle = setangle;
+        h = seth;
+        w = setw;
 
+        xMax = 5000;
+        yMax = 5000;
+        xMin = -5000;
+        yMin = -5000;
         icolor = Color.rgb(ir, ig, ib);
         ocolor = Color.rgb((255-ir),(255-ig),(255-ib));
         survivability = Math.abs(r-ir)+Math.abs(g-ig)+Math.abs(b-ib);
@@ -83,38 +95,56 @@ public class Organism {
     public float gety(){
         return y;
     }
-    public float getspeedX(){
+    public int getspeedR() {
         Random rnd = new Random();
         int num0 = rnd.nextInt(2);
         if (num0 == 0 && speedX > 1){
-            return speedX-1;
+            return speedR+1;
         }
-        else if( num0 == 1 && speedX < 10){
-            return speedX+1;
+        else if( num0 == 1 && speedR < 10){
+            return speedR+1;
         }else{
-            return speedX;
+            return speedR;
         }
     }
-    public float getspeedY(){
-        return -speedY;
+    public double getspeedX(){
+            return speedX;
+    }
+    public double getspeedY(){
+        return speedY;
+    }
+    public double getangle(){
+        Random rnd = new Random();
+        int num0 = rnd.nextInt(2);
+        if (num0 == 0){
+            return angle-(3.14/6);
+        }
+        else if( num0 == 1){
+            return angle+(3.14/6);
+        }else{
+            return speedR;
+        }
     }
 
-     public void draw(Canvas Canvas){
+     public void draw(Canvas Canvas, float locX, float locY){
         Paint innerCirclePaint = new Paint();
         innerCirclePaint.setColor(icolor);
         Paint outerCirclePaint = new Paint();
         outerCirclePaint.setColor(ocolor);
-        Canvas.drawCircle(x, y, outerRadius, outerCirclePaint);
-        Canvas.drawCircle(x, y, innerRadius, innerCirclePaint);
+         float screenX = ((w/2) + (x - locX));
+         float screenY = ((h/2) - (y - locY));
+        Canvas.drawCircle(screenX, screenY, outerRadius, outerCirclePaint);
+        Canvas.drawCircle(screenX, screenY, innerRadius, innerCirclePaint);
     }
     public void move() {
-        if (x + outerRadius + speedX >= w || x - outerRadius + speedX <= 0.0f) {
-            speedX = -speedX;
+        if (x + outerRadius + speedX >= xMax || x - outerRadius + speedX <= xMin) {
+            angle = 3.14 - angle;
         }
-        if (y + outerRadius + speedY >= h || y - outerRadius + speedY <= 0.0f) {
-            speedY = -speedY;
+        if (y + outerRadius + speedY >= yMax || y - outerRadius + speedY <= yMin) {
+            angle = 6.28 - angle;
         }
-
+        speedX = speedR*Math.cos(angle);
+        speedY = speedR*Math.sin(angle);
         x += speedX;
         y += speedY;
     }
