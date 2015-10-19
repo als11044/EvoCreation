@@ -153,8 +153,8 @@ public class GameActivity extends Activity
             float y = 0;
             double speedX = 5.;
             double speedY = 3.;
-            float outerRadius = 30.0f;
-            float innerRadius = 20.0f;
+            float outerRadius = 60.0f;
+            float innerRadius = 55.0f;
             int speedR = 5;
             double angle = 3.14 / 4;
 
@@ -166,14 +166,31 @@ public class GameActivity extends Activity
                 int arraySize = organisms.size();
                 int timeNow = time.month;
                 try {
-                    locX = locX + (js.getX())/10;
-                    locY = locY - (js.getY())/10;
+                    int joyX = (js.getX())/10;
+                    int joyY = (js.getY())/10;
+                    if ( locX + (w/2) + joyX <= 5000 && locX - (w/2) + joyX >= -5000){
+                        locX = locX + joyX;
+                    }
+                    if ( locY + (h/2) - joyY <= 5000 && locY - (h/2) - joyY >= -5000){
+                        locY = locY - joyY;
+                    }
                     canvas.drawColor(color);
                     for (int i = arraySize - 1; i >= 0; i--) {
                         organisms.get(i).draw(canvas, locX, locY);
                         organisms.get(i).move();
                     }
-
+                    for (int i = 0; i < arraySize-1; i++) {
+                        Organism organism1 = organisms.get(i);
+                        for (int j = i + 1; j < arraySize; j++) {
+                            Organism organism2 = organisms.get(j);
+                            double d = Math.sqrt(((organism1.getx() - organism2.getx()) * (organism1.getx() - organism2.getx()))
+                                    + ((organism1.gety() - organism2.gety()) * (organism1.gety() - organism2.gety())));
+                            if (d <= (organism1.getouterRadius()+organism2.getouterRadius())) {
+                                organism1.collision(organism2.getx(),organism2.gety());
+                                organism2.collision(organism1.getx(),organism1.gety());
+                            }
+                        }
+                    }
                     if (timeNow != timeLast) {
                         timeLast = timeNow;
                         for (int i = arraySize - 1; i >= 0; i--) {

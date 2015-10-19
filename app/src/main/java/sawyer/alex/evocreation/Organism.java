@@ -125,12 +125,16 @@ public class Organism {
             return speedR;
         }
     }
+    public float getouterRadius(){
+        return outerRadius;
+    }
 
      public void draw(Canvas Canvas, float locX, float locY){
         Paint innerCirclePaint = new Paint();
         innerCirclePaint.setColor(icolor);
         Paint outerCirclePaint = new Paint();
         outerCirclePaint.setColor(ocolor);
+
          float screenX = ((w/2) + (x - locX));
          float screenY = ((h/2) - (y - locY));
         Canvas.drawCircle(screenX, screenY, outerRadius, outerCirclePaint);
@@ -147,6 +151,15 @@ public class Organism {
         speedY = speedR*Math.sin(angle);
         x += speedX;
         y += speedY;
+    }
+    public void collision(double colx, double coly){
+        double dx = x - colx;
+        double dy = y - coly;
+        if ( dx <= 0 ){
+            angle = Math.atan(dy/dx)+ 3.14;
+        }else {
+            angle = Math.atan(dy/dx);
+        }
     }
     public String update(int setarraySize) {
         status = "alive";
