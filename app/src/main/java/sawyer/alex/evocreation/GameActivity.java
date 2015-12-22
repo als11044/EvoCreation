@@ -1,6 +1,8 @@
 package sawyer.alex.evocreation;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -28,6 +30,7 @@ public class GameActivity extends Activity
     private RelativeLayout layout_joystick;
     private ImageView image_joystick, image_border;
     private TextView timeView;
+    private TextView positionView;
     private JoyStickClass js;
     private GameActivity.RenderingThread mThread;
 
@@ -36,6 +39,7 @@ public class GameActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         timeView = (TextView) findViewById(R.id.timeView);
+        positionView = (TextView) findViewById(R.id.positionView);
         layout_joystick = (RelativeLayout) findViewById(R.id.layout_joystick);
         mTextureView = (TextureView) findViewById(R.id.textureView);
         mTextureView.setSurfaceTextureListener(this);
@@ -143,12 +147,16 @@ public class GameActivity extends Activity
             int timeLast = 0;
             int deaths = 0;
             int births = 0;
+            float locX = 0;
+            float locY = 0;
+
+            Paint pit = new Paint();
+            Bitmap bit= BitmapFactory.decodeResource(getResources(), R.drawable.water1);
+            BackGround background = new BackGround(pit,bit,locX,locY,w,h);
 
             List<Organism> organisms = new ArrayList<Organism>();
             Time time = new Time();
 
-            float locX = 0;
-            float locY = 0;
             float x = 0;
             float y = 0;
             double speedX = 5.;
@@ -174,7 +182,8 @@ public class GameActivity extends Activity
                     if ( locY + (h/2) - joyY <= 5000 && locY - (h/2) - joyY >= -5000){
                         locY = locY - joyY;
                     }
-                    canvas.drawColor(color);
+//                    canvas.drawBitmap(bit, 0, 0, pit);
+                    background.draw(positionView, canvas, locX, locY);
                     for (int i = arraySize - 1; i >= 0; i--) {
                         organisms.get(i).draw(canvas, locX, locY);
                         organisms.get(i).move();

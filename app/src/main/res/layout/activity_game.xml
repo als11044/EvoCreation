@@ -17,14 +17,21 @@
         android:text="@string/time_original"
         android:layout_gravity="start|top" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/positionView"
+        android:text="@string/position_original"
+        android:layout_gravity="start|bottom" />
+
     <RelativeLayout
         android:layout_height="200dp"
         android:layout_width="200dp"
         android:id="@+id/layout_joystick"
         android:background="@drawable/image_button_bg"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginBottom="100dp"
         android:layout_gravity="left|bottom"> </RelativeLayout>
 
 </FrameLayout>
