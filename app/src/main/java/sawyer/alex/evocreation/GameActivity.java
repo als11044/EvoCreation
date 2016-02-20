@@ -20,28 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 
-public class GameActivity extends Activity
-        implements TextureView.SurfaceTextureListener {
-    private TextureView mTextureView;
-    private RelativeLayout layout_joystick;
-    private ImageView image_joystick, image_border;
-    private TextView timeView;
-    private TextView positionView;
-    private JoyStickClass js;
-    private GameActivity.RenderingThread mThread;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
-        timeView = (TextView) findViewById(R.id.timeView);
-        positionView = (TextView) findViewById(R.id.positionView);
-        layout_joystick = (RelativeLayout) findViewById(R.id.layout_joystick);
-        mTextureView = (TextureView) findViewById(R.id.textureView);
-        mTextureView.setSurfaceTextureListener(this);
-
-        js = new JoyStickClass(getApplicationContext()
-                , layout_joystick, R.drawable.image_button);
         js.setStickSize(150, 150);
         js.setLayoutSize(500, 500);
         js.setLayoutAlpha(150);
