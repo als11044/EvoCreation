@@ -14,7 +14,7 @@ public class Welcome extends Activity {
 }
 
     public void openGame(View view) {
-        Intent intent = new Intent(this, GameActivity.class);
+        Intent intent = new Intent(this, Game.class);
         startActivity(intent);
     }
 
