@@ -14,7 +14,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     public static final int WIDTH = 856;
     public static final int HEIGHT = 480;
     private MainThread thread;
-    private Background bg;
+    private BackGround bg;
     private Player player;
 
     public GamePanel(Context context)
@@ -51,7 +51,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder){
 
-        bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
+        bg = new BackGround(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
         bg.setVector(-5);
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
         //we can safely start the game loop
